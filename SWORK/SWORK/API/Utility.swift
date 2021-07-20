@@ -8,21 +8,11 @@
 import Foundation
 
 extension Date {
-//    var millisecondsSince1970:Int {
-//        return Int((self.timeIntervalSince1970 * 1000.0).rounded())
-//    }
-//
-//    init(milliseconds:Int) {
-//        self =  Date(timeIntervalSince1970: TimeInterval(milliseconds))
-//        // milliseconds/1000
-//    }
-    
-    static func getTodaysDate() -> String {
-        let date = Date()
+    static func getDateString(date: Date? = nil) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.timeStyle = .none
         dateFormatter.dateStyle = .full
-        return dateFormatter.string(from: date)
+        return dateFormatter.string(from: date ?? Date())
     }
     
     static func getHourFrom(date: Date) -> String {
@@ -59,16 +49,18 @@ extension Date {
         }
         formatter.dateFormat = "dd"
         let number = Int(formatter.string(from: date))!
-        let i = 2
+        var i = 2
         var isItPrime = false
         if number == 1 {
             isItPrime = true
         }
         while i < number {
             if number % i == 0 {
+                isItPrime = false
                 break
             } else {
                 isItPrime = true
+                i += 1
             }
         }
         return isItPrime

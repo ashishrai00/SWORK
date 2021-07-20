@@ -6,9 +6,12 @@
 //
 
 import XCTest
+import MapKit
 @testable import SWORK
 
 class SWORKTests: XCTestCase {
+
+    let viewModel = MockWeatherViewModel.init()
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -19,8 +22,12 @@ class SWORKTests: XCTestCase {
     }
 
     func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let mockApiManager = MockAPIManager()
+        viewModel.apiManager = mockApiManager
+        viewModel.getLocation()
+        XCTAssertNotEqual(self.viewModel.city, "")
+        self.viewModel.getWeather()
+        XCTAssertTrue(mockApiManager.isGetWeatherAPICalled)
     }
 
     func testPerformanceExample() throws {
@@ -29,5 +36,25 @@ class SWORKTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
+}
 
+class MockAPIManager: APIManager {
+    var isGetWeatherAPICalled = false
+    override func getWeather(onSuccess: @escaping (Result) -> Void, onError: @escaping (String) -> Void) {
+        super.getWeather(onSuccess: onSuccess, onError: onError)
+        isGetWeatherAPICalled = true
+    }
+}
+
+class MockWeatherViewModel: WeatherViewModel {
+    override func getLocation() {
+        super.getLocation()
+        self.city = "Noida"
+    }
+    override func getWeather() {
+        super.getWeather()
+    }
+    override func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        super.locationManager(manager, didUpdateLocations: locations)
+    }
 }

@@ -31,16 +31,14 @@ class RightNowView: FancyView {
         tempLabel.text = ""
     }
     
-    func updateView(currentWeather: Result, city: String) {
+    func updateView(currentWeather: Result, city: String, date: Date) {
         cityLabel.text = "Current city: \(city)"
-        dateLabel.text = Date.getTodaysDate()
+        dateLabel.text = Date.getDateString(date: date)
         weatherLabel.text = "Description: \(currentWeather.current.weather[0].description.capitalized)"
         weatherImage.image = UIImage(named: currentWeather.current.weather[0].icon)
         dayLabel.text = "Day: \(currentWeather.daily[0].temp.day)"
         minTempLabel.text = "Min temp: \(currentWeather.daily[0].temp.min)"
         maxTempLabel.text = "Max temp: \(currentWeather.daily[0].temp.max)"
-        tempLabel.text = "Temp: \(currentWeather.hourly[0].temp)"
-        primeLabel.text = Date.isDatePrime(date: Date()) ? "Day number is prime!" : "Day number is not prime!"
+        tempLabel.text = "Temp: \(currentWeather.current.temp)"
     }
-
 }

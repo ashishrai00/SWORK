@@ -8,47 +8,49 @@
 import UIKit
 import MapKit
 
-class WeatherViewController: UIViewController, CLLocationManagerDelegate {
+class WeatherViewController: UIViewController {
 
     @IBOutlet weak var rightNowView: RightNowView!
-    
-    var city = ""
-    var locationManger: CLLocationManager!
-    var currentlocation: CLLocation?
+    @IBOutlet weak var datePicker: UIDatePicker!
+
     var viewModel: WeatherViewModel?
     var activityView: UIActivityIndicatorView?
-    
-    var searchResult: Result? {
-        didSet {
-            guard let searchResult = searchResult else { return }
-            self.viewModel = WeatherViewModel.init(result: searchResult, cityName: self.city)
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        initUIElements()
+        initViewModal()
+        clearAll()
+        viewModel?.getLocation()
+    }
+
+    func initViewModal() {
+        self.viewModel = WeatherViewModel.init()
+        self.viewModel?.hideLoading = {
             DispatchQueue.main.async {
                 self.activityView?.stopAnimating()
             }
         }
+        self.viewModel?.showLoading = { [weak self] in
+            if self?.activityView == nil {
+                self?.activityView = UIActivityIndicatorView(style: .large)
+            }
+            self?.activityView?.center = self?.view.center ?? CGPoint(x: 0, y: 0)
+            self?.activityView?.startAnimating()
+            self?.view.addSubview(self?.activityView ?? UIActivityIndicatorView())
+        }
+        self.viewModel?.updateViews = {
+            self.updateTopView()
+        }
     }
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        clearAll()
-        self.showActivity()
-        getLocation()
+
+    func initUIElements() {
+        self.activityView = UIActivityIndicatorView(style: .large)
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
     }
-    
+
     func clearAll() {
         rightNowView.clear()
-    }
-    
-    func getWeather() {
-        APIManager.shared.getWeather(onSuccess: { (result) in
-            self.searchResult = result
-            
-            self.searchResult?.sortDailyArray()
-            self.searchResult?.sortHourlyArray()
-            self.updateViews()
-            
-        }) { (errorMessage) in
-            debugPrint(errorMessage)
-        }
     }
     
     func updateViews() {
@@ -56,74 +58,30 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     func updateTopView() {
-        guard let weatherResult = viewModel?.result else {
+        guard let weatherResult = viewModel?.result, let city = viewModel?.city, let selectedDate = viewModel?.selectedDate else {
             return
         }
-        
-        rightNowView.updateView(currentWeather: weatherResult, city: city)
-    }
-        
-    func getLocation() {
-       
-        if (CLLocationManager.locationServicesEnabled()) {
-            locationManger = CLLocationManager()
-            locationManger.delegate = self
-            locationManger.desiredAccuracy = kCLLocationAccuracyBest
-            locationManger.requestWhenInUseAuthorization()
-            locationManger.requestLocation()
-        }
-        
-    }
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.last {
-            self.currentlocation = location
-            
-            let latitude: Double = self.currentlocation!.coordinate.latitude
-            let longitude: Double = self.currentlocation!.coordinate.longitude
-            
-            APIManager.shared.setLatitude(latitude)
-            APIManager.shared.setLongitude(longitude)
-            
-            let geocoder = CLGeocoder()
-            geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
-                if let error = error {
-                    debugPrint(error.localizedDescription)
-                }
-                if let placemarks = placemarks {
-                    if placemarks.count > 0 {
-                        let placemark = placemarks[0]
-                        if let city = placemark.locality {
-                            self.city = city
-                        }
-                    }
-                }
-            }
-            
-            getWeather()
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        debugPrint(error.localizedDescription)
+        rightNowView.updateView(currentWeather: weatherResult, city: city, date: selectedDate)
     }
     
     @IBAction func getWeatherTapped(_ sender: UIButton) {
         clearAll()
-        showActivity()
-        getLocation()
+        viewModel?.showLoading?()
+        viewModel?.getLocation()
     }
-    
-    @IBAction func todayWeeklyValueChanged(_ sender: UISegmentedControl) {
-        clearAll()
-        updateViews()
-    }
-    
-    private func showActivity() {
-        self.activityView = UIActivityIndicatorView(style: .large)
-        activityView?.center = self.view.center
-        activityView?.startAnimating()
+}
 
-        self.view.addSubview(activityView ?? UIActivityIndicatorView())
+// Date Picker Implementation
+extension WeatherViewController {
+    @objc func datePickerValueChanged(_ sender: UIDatePicker){
+        self.dismiss(animated: true, completion: nil)
+        self.viewModel?.selectedDate = sender.date
+        if Date.isDatePrime(date: sender.date) {
+            self.rightNowView.primeLabel.text = ""
+            APIManager.shared.DATE = "\(sender.date.timeIntervalSince1970)"
+            self.viewModel?.getWeather()
+        } else {
+            self.rightNowView.primeLabel.text = "Day number is not prime!"
+        }
     }
 }

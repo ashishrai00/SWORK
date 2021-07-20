@@ -10,21 +10,24 @@ import Foundation
 class APIManager {
     static let shared = APIManager()
     
-//    http://maps.openweathermap.org/maps/2.0/weather/TA2/{z}/{x}/{y}?date=1527811200&opacity=0.9&fill_bound=true&appid={API key}
-    let URL_SAMPLE = "https://api.openweathermap.org/data/2.5/onecall?date=1527811200?lat=60.99&lon=30.9&appid=cc36fb58aac05d2e69b0d466f9201869"
     let URL_API_KEY = "cc36fb58aac05d2e69b0d466f9201869"
     var URL_LATITUDE = "60.99"
     var URL_LONGITUDE = "30.0"
     var URL_GET_ONE_CALL = ""
     let URL_BASE = "https://api.openweathermap.org/data/2.5"
-    
+    var DATE = "1626784000.052041"
+
     let session = URLSession(configuration: .default)
     
     func buildURL() -> String {
-        URL_GET_ONE_CALL = "/onecall?lat=" + URL_LATITUDE + "&lon=" + URL_LONGITUDE + "&units=imperial" + "&appid=" + URL_API_KEY
+        URL_GET_ONE_CALL = "/onecall?date=" + DATE + "&lat=" + URL_LATITUDE + "&lon=" + URL_LONGITUDE + "&units=imperial" + "&appid=" + URL_API_KEY
         return URL_BASE + URL_GET_ONE_CALL
     }
-    
+
+    func setDate(_ date: String) {
+        DATE = date
+    }
+
     func setLatitude(_ latitude: String) {
         URL_LATITUDE = latitude
     }
@@ -73,5 +76,4 @@ class APIManager {
         }
         task.resume()
     }
-    
 }
