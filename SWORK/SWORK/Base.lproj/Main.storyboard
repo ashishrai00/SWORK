@@ -120,14 +120,21 @@
                                     <outlet property="weatherLabel" destination="f7F-Uc-3dY" id="0No-Iz-wHd"/>
                                 </connections>
                             </view>
+                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="YeS-0N-ST4">
+                                <rect key="frame" x="16" y="481" width="343" height="176"/>
+                            </datePicker>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemYellowColor"/>
                         <constraints>
                             <constraint firstItem="rZV-Pp-E7o" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="0ch-61-kdj"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="YeS-0N-ST4" secondAttribute="bottom" constant="10" id="DLP-Z5-q4I"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="rZV-Pp-E7o" secondAttribute="trailing" constant="16" id="Kem-0m-TyA"/>
                             <constraint firstItem="rZV-Pp-E7o" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="OT0-Td-XDm"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="rZV-Pp-E7o" secondAttribute="bottom" multiplier="1.5" constant="-42.5" id="bAM-Fl-i3D"/>
+                            <constraint firstItem="YeS-0N-ST4" firstAttribute="top" secondItem="rZV-Pp-E7o" secondAttribute="bottom" constant="8" symbolic="YES" id="iTS-NT-dIw"/>
+                            <constraint firstItem="YeS-0N-ST4" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="jgt-qp-sz4"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="YeS-0N-ST4" secondAttribute="trailing" constant="16" id="z9F-Aq-cMk"/>
                         </constraints>
                     </view>
                     <connections>

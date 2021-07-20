@@ -1,6 +1,0 @@
-framework module Pods_SWORKTests {
-  umbrella header "Pods-SWORKTests-umbrella.h"
-
-  export *
-  module * { export * }
-}
