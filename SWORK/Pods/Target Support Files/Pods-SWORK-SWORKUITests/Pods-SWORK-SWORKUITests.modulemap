@@ -1,0 +1,6 @@
+framework module Pods_SWORK_SWORKUITests {
+  umbrella header "Pods-SWORK-SWORKUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
