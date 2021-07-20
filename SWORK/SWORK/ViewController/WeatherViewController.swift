@@ -21,6 +21,7 @@ class WeatherViewController: UIViewController {
         initUIElements()
         initViewModal()
         clearAll()
+        viewModel?.showLoading?()
         viewModel?.getLocation()
     }
 
